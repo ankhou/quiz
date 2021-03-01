@@ -71,6 +71,18 @@ $( document ).ready(function() {
 	$("#questionCount").text( $(".question").length )
 	
 	$("#checkAnswers").on( "click", checkAnswers );
+	
+	$(".question").each( function( i = 0 ) {
+		var submission = $(this).find("input:checked").val();
+		var answer = atob( answerList[i] );
+		console.log("submission: " + submission + " | correct answer: " + answer);
+		if ( submission == answer ) {
+			nScore++;
+		} else {
+			return result = "fail";
+		}
+		i++;
+	})
 
 });
 
@@ -101,7 +113,7 @@ $( document ).ready(function() {
 </section>
 <!-- Question 2 -->
 <section class="question">
-	<legend class="h5 mrgn-tp-0 mrgn-bttm-md required">1) What is the meaning of life?</legend>
+	<legend class="h5 mrgn-tp-0 mrgn-bttm-md required">2) What is the meaning of life?</legend>
 	<label>
 		<input name="quiz-2" type="radio" value="1" required>
 		&nbsp;Don't panic
