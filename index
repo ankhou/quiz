@@ -1,0 +1,127 @@
+<head>
+<style>
+body{
+	font-family:sans-serif;
+}
+.hidden{
+	display:none;
+}
+#subMsg{
+	font-weight:bold;
+}
+.fail{
+	color:red;
+}
+.pass{
+	color:green;
+}
+label{
+	display:block;
+	margin:3px 0;
+}
+.question{
+	margin-bottom:20px;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+
+var answerList = ["NA==", "Mw=="];
+
+var nScore = 0;
+
+function checkAnswers(){
+
+	var result = "pass";
+	
+	// disable radio buttons
+	$("input").attr("disabled", "disabled");
+
+	$(".question").each( function( i = 0 ) {
+		var submission = $(this).find("input:checked").val();
+		var answer = atob( answerList[i] );
+		console.log("submission: " + submission + " | correct answer: " + answer);
+		if ( submission == answer ) {
+			nScore++;
+		} else {
+			return result = "fail";
+		}
+		i++;
+	})
+	console.log("result is " + result)
+
+	$("#txtScore").val(nScore);
+	
+	if ( result == "fail" ) {
+		$("#subMsg").removeClass().text("You failed the quiz. Please try again.").addClass("fail");
+		console.log("quiz failed");
+	} else {
+		$("#subMsg").removeClass().text("You passed the quiz!").addClass("pass");
+		console.log("quiz passed");
+	}
+
+	return;
+
+}
+
+$( document ).ready(function() {
+	
+	$("#questionCount").text( $(".question").length )
+	
+	$("#checkAnswers").on( "click", checkAnswers );
+
+});
+
+</script> 
+</head>
+
+<body>
+<!-- Multiple choice questions information -->
+<!-- Question 1 -->
+<section class="question">
+	<legend class="h5 mrgn-tp-0 mrgn-bttm-md required">1) What is the airspeed velocity of an unladen swallow?</legend>
+	<label>
+		<input name="quiz-1" type="radio" value="1" required>
+		&nbsp;9 m/s
+	</label>
+	<label>
+		<input name="quiz-1" type="radio" value="2" required>
+		&nbsp;7 m/s
+	</label>
+	<label>
+		<input name="quiz-1" type="radio" value="3" required>
+		&nbsp;13 m/s
+	</label>
+	<label>
+		<input name="quiz-1" type="radio" value="4" required>
+		&nbsp;An African or European swallow?
+	</label>
+</section>
+<!-- Question 2 -->
+<section class="question">
+	<legend class="h5 mrgn-tp-0 mrgn-bttm-md required">1) What is the meaning of life?</legend>
+	<label>
+		<input name="quiz-2" type="radio" value="1" required>
+		&nbsp;Don't panic
+	</label>
+	<label>
+		<input name="quiz-2" type="radio" value="2" required>
+		&nbsp;Mostly harmless
+	</label>
+	<label>
+		<input name="quiz-2" type="radio" value="3" required>
+		&nbsp;42
+	</label>
+	<label>
+		<input name="quiz-2" type="radio" value="4" required>
+		&nbsp;Garbage in, garbage out
+	</label>
+</section>
+<p>
+	<input type="button" id="checkAnswers" value="Submit answers">
+	<label for="textField"><input type="text" name="textField" id="txtScore" maxlength="2" size="2" disabled value="0"> correct out of <span id="questionCount"></span> questions</label>
+</p>
+<p id="subMsg" class="hidden"></p>
+</body>
