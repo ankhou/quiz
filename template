@@ -1,0 +1,151 @@
+<head>
+<style>
+body{
+	font-family:sans-serif;
+}
+.hidden{
+	display:none;
+}
+#subMsg{
+	font-weight:bold;
+}
+.fail{
+	color:red;
+}
+.pass{
+	color:green;
+}
+label{
+	display:block;
+	margin:3px 0;
+}
+.question{
+	margin-bottom:20px;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+
+const questionList = [
+  {
+    question: "What is the airspeed velocity of an unladen swallow?",
+    answers: {
+      a: "9 m/s",
+      b: "7 m/s",
+      c: "13 m/s",
+	  d: "An African or European swallow?"
+    },
+	solution: "ZA=="
+  },
+  {
+    question: "What is the meaning of life?",
+    answers: {
+      a: "Don't panic",
+      b: "Mostly harmless",
+      c: "42",
+	  d: "Garbage in, garbage out"
+    },
+	solution: "Yw=="
+  }
+];
+
+var nScore = 0;
+
+function buildQuiz(){
+  console.log("building quiz");
+  // variable to store the HTML output
+  const output = [];
+
+  // for each question...
+  questionList.forEach(
+    (currentQuestion, questionNumber) => {
+
+      // variable to store the list of possible answers
+      const answers = [];
+
+      // and for each available answer...
+      for(letter in currentQuestion.answers){
+
+        // ...add an HTML radio button
+        answers.push(
+          `<label>
+            <input type="radio" name="q${questionNumber}" value="${letter}">
+            ${currentQuestion.answers[letter]}
+          </label>`
+        );
+		console.log("added question");
+      }
+
+      // add this question and its answers to the output
+      output.push(
+        `<section class="question"><p>${currentQuestion.question}</p>
+        ${answers.join('')}</section>`
+      );
+	  console.log("constructed output");
+    }
+  );
+
+  // finally combine our output list into one string of HTML and put it on the page
+  $("#quiz").html(output.join(''));
+  console.log(output);
+}
+
+function checkAnswers(){
+
+	var result = "pass";
+	
+	// disable radio buttons
+	$("input").attr("disabled", "disabled");
+
+	$(".question").each( function( i = 0 ) {
+		var submission = $(this).find("input:checked").val();
+		var solution = atob( questionList[i]["solution"] );
+		console.log("submission: " + submission + " | correct answer: " + solution);
+		if ( submission == solution ) {
+			nScore++;
+		} else {
+			return result = "fail";
+		}
+		i++;
+	})
+	console.log("result is " + result)
+
+	$("#txtScore").val(nScore);
+	
+	if ( result == "fail" ) {
+		$("#subMsg").removeClass().text("You failed the quiz. Please try again.").addClass("fail");
+		console.log("quiz failed");
+	} else {
+		$("#subMsg").removeClass().text("You passed the quiz!").addClass("pass");
+		console.log("quiz passed");
+	}
+
+	return;
+
+}
+
+$( document ).ready(function() {
+
+	buildQuiz();
+	
+	$("#questionCount").text( $(".question").length )
+	
+	$("#checkAnswers").on( "click", checkAnswers );
+
+});
+
+</script> 
+</head>
+
+<body>
+<div id="quiz">
+<!-- quiz goes here -->
+</div>
+<p>
+	<input type="button" id="checkAnswers" value="Submit answers">
+	<label for="textField"><input type="text" name="textField" id="txtScore" maxlength="2" size="2" disabled value="0"> correct out of <span id="questionCount"></span> questions</label>
+</p>
+<p id="subMsg" class="hidden"></p>
+</body>
